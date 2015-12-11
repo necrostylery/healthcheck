@@ -1,12 +1,10 @@
 from __future__ import with_statement
-
 import unittest
 import flask
 from healthcheck import HealthCheck, EnvironmentDump
 
 
 class BasicHealthCheckTest(unittest.TestCase):
-
     def setUp(self):
         self.path = '/h'
         self.app = flask.Flask(__name__)
@@ -30,7 +28,6 @@ class BasicHealthCheckTest(unittest.TestCase):
 
 
 class BasicEnvironmentDumpTest(unittest.TestCase):
-
     def setUp(self):
         self.path = '/e'
         self.app = flask.Flask(__name__)
@@ -38,7 +35,8 @@ class BasicEnvironmentDumpTest(unittest.TestCase):
         self.client = self.app.test_client()
 
     def _hc(self):
-        return EnvironmentDump(self.app, self.path)
+        return EnvironmentDump(self.app, self.path, include_os=False, include_python=False, include_config=False,
+                               include_process=False)
 
     def test_basic_check(self):
         def test_ok():
@@ -53,7 +51,6 @@ class BasicEnvironmentDumpTest(unittest.TestCase):
 
 
 class LazyHealthCheckTest(BasicHealthCheckTest):
-
     def setUp(self):
         super(LazyHealthCheckTest, self).setUp()
         self.hc.init_app(self.app, self.path)
@@ -62,14 +59,14 @@ class LazyHealthCheckTest(BasicHealthCheckTest):
         return HealthCheck()
 
 
-class LazyEnvironmentDumpTest(unittest.TestCase):
-
+class LazyEnvironmentDumpTest(BasicEnvironmentDumpTest):
     def setUp(self):
         super(LazyEnvironmentDumpTest, self).setUp()
         self.hc.init_app(self.app, self.path)
 
     def _hc(self):
-        return EnvironmentDump()
+        return EnvironmentDump(include_os=False, include_python=False, include_config=False, include_process=False)
+
 
 if __name__ == '__main__':
     unittest.main()

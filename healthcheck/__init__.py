@@ -6,6 +6,7 @@ import sys
 import time
 import traceback
 from flask import current_app
+
 try:
     from functools import reduce
 except Exception:
